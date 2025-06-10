@@ -1,0 +1,89 @@
+{% extends 'pacs/base.html' %}
+
+{% block title %}Série - {{ series.series_description }} - Santos{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>Detalhes da Série</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Informações da Série</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Descrição:</strong> {{ series.series_description }}</p>
+                        <p><strong>Modalidade:</strong> {{ series.modality }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Número de Imagens:</strong> {{ series.dicom_files.count }}</p>
+                        <p><strong>Estudo:</strong> {{ series.study.study_description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h3>Visualizador de Imagem</h3>
+        <div class="card">
+            <div class="card-body text-center">
+                {% if series.dicom_files.first.preview %}
+                    <img id="mainPreview" src="{{ series.dicom_files.first.preview.url }}" class="img-fluid mb-3" style="max-height: 500px; background: #000;" alt="Pré-visualização">
+                {% else %}
+                    <div class="alert alert-info">Nenhuma pré-visualização disponível.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12 mb-2">
+        <a href="{% url 'download_series_zip' series.pk %}" class="btn btn-success mb-3">Baixar Série Completa (ZIP)</a>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <h3>Lista de Imagens</h3>
+        <div class="row" id="thumbnails">
+            {% for dicom_file in series.dicom_files.all %}
+            <div class="col-md-1 col-3 mb-2">
+                <div class="card h-100 p-1" style="min-width: 90px; max-width: 110px;">
+                    {% if dicom_file.preview %}
+                    <img src="{{ dicom_file.preview.url }}" class="card-img-top img-thumbnail thumb-preview" style="cursor:pointer; background: #000; width: 80px; height: 80px; object-fit: contain; margin: 0 auto;" alt="Pré-visualização" data-full="{{ dicom_file.preview.url }}">
+                    {% endif %}
+                    <div class="card-body p-1 text-center">
+                        <h6 class="card-title mb-1" style="font-size: 0.85rem;">Img {{ dicom_file.instance_number }}</h6>
+                        <a href="{% url 'serve_dicom' dicom_file.pk %}" class="btn btn-primary btn-sm w-100" style="font-size: 0.8rem; padding: 2px 0;" target="_blank">Download DICOM</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">Nenhuma imagem encontrada nesta série.</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <a href="{% url 'view_study' series.study.pk %}" class="btn btn-secondary">Voltar ao Estudo</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Troca a imagem principal ao clicar na miniatura
+    document.querySelectorAll('.thumb-preview').forEach(function(img) {
+        img.addEventListener('click', function() {
+            document.getElementById('mainPreview').src = this.dataset.full;
+        });
+    });
+</script>
+{% endblock %} 

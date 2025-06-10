@@ -1,0 +1,65 @@
+{% extends 'pacs/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Detalhes do Arquivo DICOM</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Informações do Paciente</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Nome do Paciente:</th>
+                            <td>{{ dicom_file.patient_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>ID do Paciente:</th>
+                            <td>{{ dicom_file.patient_id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Data do Estudo:</th>
+                            <td>{{ dicom_file.study_date|date:"d/m/Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Modalidade:</th>
+                            <td>{{ dicom_file.modality }}</td>
+                        </tr>
+                        <tr>
+                            <th>Descrição:</th>
+                            <td>{{ dicom_file.study_description }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h4>Informações do Arquivo</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Enviado por:</th>
+                            <td>{{ dicom_file.uploaded_by.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>Data de Upload:</th>
+                            <td>{{ dicom_file.uploaded_at|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Arquivo:</th>
+                            <td>{{ dicom_file.file.name }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'home' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+                <a href="{% url 'delete_dicom' dicom_file.pk %}" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Excluir
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

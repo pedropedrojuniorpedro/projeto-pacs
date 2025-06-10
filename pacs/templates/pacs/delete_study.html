@@ -1,0 +1,32 @@
+{% extends 'pacs/base.html' %}
+
+{% block title %}Excluir Estudo - Santos{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h2 class="card-title">Confirmar Exclusão</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead">Você tem certeza que deseja excluir o estudo do paciente <strong>{{ study.patient_name }}</strong>?</p>
+                <p>Esta ação irá excluir:</p>
+                <ul>
+                    <li>{{ study.series_set.count }} série(s)</li>
+                    <li>{{ study.dicomfile_set.count }} imagem(ns)</li>
+                </ul>
+                <p class="text-danger">Esta ação não pode ser desfeita!</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+                        <a href="{% url 'view_study' study.pk %}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
