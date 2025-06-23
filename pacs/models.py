@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import os
 from django.conf import settings
 from django.utils import timezone
+from django.core.files.base import ContentFile
 
 # Create your models here.
 
@@ -68,12 +69,15 @@ class DicomFile(models.Model):
         super().delete(*args, **kwargs)
 
     def generate_preview(self):
+        import matplotlib
+        matplotlib.use('Agg')
         import pydicom
         import matplotlib.pyplot as plt
         import os
         from django.conf import settings
         from PIL import Image
         import io
+        from django.core.files.base import ContentFile
 
         try:
             # Lê o arquivo DICOM forçando a leitura
@@ -94,21 +98,16 @@ class DicomFile(models.Model):
             
             # Cria o nome do arquivo de pré-visualização
             preview_filename = f"preview_{self.sop_instance_uid}.png"
-            preview_path = os.path.join(settings.MEDIA_ROOT, 'previews', preview_filename)
             
-            # Salva a imagem
-            with open(preview_path, 'wb') as f:
-                f.write(buffer.getvalue())
-            
-            # Atualiza o campo preview
-            self.preview = f'previews/{preview_filename}'
-            self.save()
+            # Salva o arquivo de pré-visualização no campo ImageField
+            self.preview.save(preview_filename, ContentFile(buffer.getvalue()), save=False)
             
             # Limpa a figura
             plt.close()
+            return True
         except Exception as e:
             print(f"Erro ao gerar pré-visualização: {str(e)}")
-            # Não propaga o erro para não interromper o upload
+            return False
 
     class Meta:
         ordering = ['instance_number']

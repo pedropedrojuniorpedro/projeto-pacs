@@ -36,7 +36,7 @@
                         <td>{{ study.total_images }}</td>
                         <td>{{ study.uploaded_by.username }}</td>
                         <td>
-                            <div class="btn-group" role="group">
+                            <div class="d-flex gap-2" role="group">
                                 <a href="{% url 'view_study' study.pk %}" class="btn btn-primary btn-sm">Ver</a>
                                 <a href="{% url 'delete_study' study.pk %}" class="btn btn-danger btn-sm">Excluir</a>
                             </div>
