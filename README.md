@@ -1,4 +1,4 @@
-# PACS Simplificado
+# PACS
 
 Sistema PACS (Picture Archiving and Communication System) simplificado desenvolvido em Django.
 
